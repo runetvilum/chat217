@@ -55,7 +55,7 @@
         });
     });
     app.listen(4001);
-    console.log('Listening on port 4000');
+    console.log('Listening on port 4001');
     winston.remove(winston.transports.Console);
     winston.info('start');
     ref.authWithCustomToken(config.firebase_token, function (error, authData) {
