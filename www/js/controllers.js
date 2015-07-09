@@ -219,13 +219,17 @@ angular.module('starter.controllers', [])
             // for some reason the one time blur event is not firing in the browser but does on devices
             //keepKeyboardOpen();
 
-
-            queue.push({
+            var doc = {
                 chat: {
                     msg: $scope.input.message,
-                    uid: $rootScope.authData.uid
+                    uid: $stateParams.user
                 }
-            }, function (err) {
+            };
+            if (currentAuth.auth.sagsbehandler) {
+                doc.chat.sagsbehandler = true;
+
+            }
+            queue.push(doc, function (err) {
                 if (err) {
                     console.log(err);
                 }
@@ -309,13 +313,16 @@ angular.module('starter.controllers', [])
                                 canvas.height = height;
                                 var ctx = canvas.getContext("2d");
                                 ctx.drawImage(img, 0, 0, width, height);
-
-                                queue.push({
+                                var doc = {
                                     chat: {
                                         img: canvas.toDataURL('image/jpeg'),
-                                        uid: $rootScope.authData.uid
+                                        uid: $stateParams.user
                                     }
-                                }, function (err) {
+                                };
+                                if (currentAuth.auth.sagsbehandler) {
+                                    doc.chat.sagsbehandler = true;
+                                }
+                                queue.push(doc, function (err) {
                                     if (err) {
                                         console.log(err);
                                     }
@@ -354,12 +361,16 @@ angular.module('starter.controllers', [])
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, width, height);
 
-                            queue.push({
+                            var doc = {
                                 chat: {
                                     img: canvas.toDataURL('image/jpeg'),
-                                    uid: $rootScope.authData.uid
+                                    uid: $stateParams.user
                                 }
-                            }, function (err) {
+                            };
+                            if (currentAuth.auth.sagsbehandler) {
+                                doc.chat.sagsbehandler = true;
+                            }
+                            queue.push(doc, function (err) {
                                 if (err) {
                                     console.log(err);
                                 }

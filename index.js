@@ -77,7 +77,7 @@
                 ref.child('chatroom').child(data.chat.uid).push(doc, function (err) {
                     if (err) {
                         reject();
-                    } else if (doc.uid.indexOf('custom') === -1) {
+                    } else if (!data.chat.sagsbehandler) {
                         ref.child('sagsbehandler').push(doc, function (err) {
                             if (err) {
                                 reject();
