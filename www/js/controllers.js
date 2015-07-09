@@ -219,17 +219,15 @@ angular.module('starter.controllers', [])
             // for some reason the one time blur event is not firing in the browser but does on devices
             //keepKeyboardOpen();
 
-            var doc = {
+
+
+            queue.push({
                 chat: {
                     msg: $scope.input.message,
-                    uid: $stateParams.user
+                    uid: currentAuth.uid,
+                    room: $stateParams.user
                 }
-            };
-            if (currentAuth.auth.sagsbehandler) {
-                doc.chat.sagsbehandler = true;
-
-            }
-            queue.push(doc, function (err) {
+            }, function (err) {
                 if (err) {
                     console.log(err);
                 }
@@ -313,16 +311,13 @@ angular.module('starter.controllers', [])
                                 canvas.height = height;
                                 var ctx = canvas.getContext("2d");
                                 ctx.drawImage(img, 0, 0, width, height);
-                                var doc = {
+                                queue.push({
                                     chat: {
                                         img: canvas.toDataURL('image/jpeg'),
-                                        uid: $stateParams.user
+                                        uid: currentAuth.uid,
+                                        room: $stateParams.user
                                     }
-                                };
-                                if (currentAuth.auth.sagsbehandler) {
-                                    doc.chat.sagsbehandler = true;
-                                }
-                                queue.push(doc, function (err) {
+                                }, function (err) {
                                     if (err) {
                                         console.log(err);
                                     }
@@ -360,17 +355,13 @@ angular.module('starter.controllers', [])
                             canvas.height = height;
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, width, height);
-
-                            var doc = {
+                            queue.push({
                                 chat: {
                                     img: canvas.toDataURL('image/jpeg'),
-                                    uid: $stateParams.user
+                                    uid: currentAuth.uid,
+                                    room: $stateParams.user
                                 }
-                            };
-                            if (currentAuth.auth.sagsbehandler) {
-                                doc.chat.sagsbehandler = true;
-                            }
-                            queue.push(doc, function (err) {
+                            }, function (err) {
                                 if (err) {
                                     console.log(err);
                                 }

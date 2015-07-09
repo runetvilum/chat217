@@ -74,10 +74,10 @@
                 if (data.chat.img) {
                     doc.img = data.chat.img;
                 }
-                ref.child('chatroom').child(data.chat.uid).push(doc, function (err) {
+                ref.child('chatroom').child(data.chat.room).push(doc, function (err) {
                     if (err) {
                         reject();
-                    } else if (!data.chat.sagsbehandler) {
+                    } else if (doc.uid.indexOf('custom') === -1) {
                         ref.child('sagsbehandler').push(doc, function (err) {
                             if (err) {
                                 reject();
