@@ -1,0 +1,89 @@
+<ion-view id="userMessagesView" view-title="Chat">
+    <ion-nav-buttons side="secondary">
+        <button class="button button-icon icon ion-log-out" ng-click="Auth.$unauth()">
+        </button>
+    </ion-nav-buttons>
+
+    <ion-content has-bouncing="true" class="has-header has-footer" delegate-handle="userMessageScroll">
+        <div ng-repeat="message in messages" class="message-wrapper" on-hold="onMessageHold($event, $index, message)">
+
+            <div ng-if="message.uid.indexOf('custom')!==-1">
+
+                <img ng-click="viewProfile(message)" class="profile-pic left" src="/img/logo.png" onerror="onProfilePicError(this)" />
+
+                <div class="chat-bubble left" ng-if="message.msg">
+
+                    <div class="message" ng-bind-html="message.msg | nl2br" autolinker>
+                    </div>
+
+                    <div class="message-detail">
+                        <span ng-click="viewProfile(message)" class="bold">Sagsbehandler</span>,
+                        <span am-time-ago="message.timestamp"></span>
+                    </div>
+
+                </div>
+                <div class="chat-bubble left-img" ng-if="message.img" back-img="message.img" ng-style="message.style">
+
+                    <div class="message" ng-bind-html="message.msg | nl2br" autolinker>
+                    </div>
+
+                    <div class="message-detail">
+                        <span ng-click="viewProfile(message)" class="bold">Sagsbehandler</span>,
+                        <span am-time-ago="message.timestamp"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div ng-if="message.uid.indexOf('custom')===-1">
+
+                <img class="profile-pic right" ng-src="{{borger[borger.provider].profileImageURL  || '/img/ionic.png'}}" onerror="onProfilePicError(this)" />
+
+                <div class="chat-bubble right" ng-if="message.msg">
+
+                    <div class="message" ng-bind-html="message.msg | nl2br" autolinker>
+                    </div>
+
+                    <div class="message-detail">
+                        <span ng-click="viewProfile(message)" class="bold">{{borger[borger.provider].displayName || 'Anonym'}}</span>,
+                        <span am-time-ago="message.timestamp"></span>
+                    </div>
+
+                </div>
+                <div class="chat-bubble right-img" ng-if="message.img" back-img="message.img" ng-style="message.style">
+
+                    <div class="message" ng-bind-html="message.msg | nl2br" autolinker>
+                    </div>
+
+                    <div class="message-detail">
+                        <span ng-click="viewProfile(message)" class="bold">{{borger[borger.provider].displayName || 'Anonym'}}</span>,
+                        <span am-time-ago="message.timestamp"></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="cf"></div>
+
+        </div>
+    </ion-content>
+
+
+    <ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
+        <div class="footer-btn-wrap">
+            <button class="button button-icon icon ion-camera footer-btn" ng-click="openFileDialog()">
+            </button>
+        </div>
+        <label class="item-input-wrapper">
+            <textarea ng-model="input.message" value="" placeholder="Tekstbesked" required minlength="1" maxlength="1500" msd-elastic></textarea>
+        </label>
+        <div class="footer-btn-wrap">
+            <button class="button button-clear footer-btn" ng-click="sendMessage()" ng-disabled="!input.message || input.message === ''" ng-class="{'button-positive':input.message }">Send
+            </button>
+        </div>
+
+    </ion-footer-bar>
+
+    <input id="image" type="file" style="display:none">
+</ion-view>

@@ -1,8 +1,66 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function ($scope, FirebaseRef) {
+.controller('loginCtrl', function ($scope, FirebaseRef, Auth, $http) {
+    $scope.signInFacebook = function () {
+        Auth.$authWithOAuthPopup("facebook").then(function (authData) {
+            console.log("Authentication succes:", authData.uid);
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+            $scope.error = error;
+        });
+    };
+    $scope.signInTwitter = function () {
+        Auth.$authWithOAuthPopup("twitter").then(function (authData) {
+            console.log("Authentication succes:", authData.uid);
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+            $scope.error = error;
+        });
+    };
+    $scope.signInGoogle = function () {
+        Auth.$authWithOAuthPopup("google").then(function (authData) {
+            console.log("Authentication succes:", authData.uid);
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+            $scope.error = error;
+        });
+    };
+    $scope.signInAnonymously = function () {
+        Auth.$authAnonymously().then(function (authData) {
+            console.log("Authentication succes:", authData.uid);
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+            $scope.error = error;
+        });
+    };
+    /*scope.signIn = function (user) {
+        Auth.$authWithPassword(user).then(function (authData) {
+            console.log("Authentication succes:", authData.uid);
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+            scope.error = error.message;
+        });
+    };*/
+    $scope.signIn = function (user) {
+        $http.post('http://bykongen.addin.dk:4001/signin', user).then(function (res) {
+            Auth.$authWithCustomToken(res.data).then(function (authData) {
+                console.log("Authentication succes:", authData.uid);
+            }).catch(function (error) {
+                console.error("Authentication failed:", error);
+                $scope.error = error;
+            });
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+            $scope.error = "Brugernavn og password er ikke korrekt";
+        });
+    };
+})
+
+.controller('beskederCtrl', function ($scope, FirebaseRef, Auth, currentAuth) {
     // create a connection to Firebase
+    $scope.Auth = Auth;
     var baseRef = FirebaseRef.child('sagsbehandler');
+
     // create a scrollable reference
     var scrollRef = baseRef.limitToFirst(10);
     var last, current;
@@ -87,20 +145,26 @@ angular.module('starter.controllers', [])
 })*/
 
 
-.controller('ChatsCtrl', ['$scope', '$rootScope', '$state', '$stateParams', 'MockService', '$ionicActionSheet', '$ionicScrollDelegate', '$timeout', '$interval', 'FirebaseRef', '$firebaseArray', 'currentAuth',
-  function ($scope, $rootScope, $state, $stateParams, MockService, $ionicActionSheet, $ionicScrollDelegate, $timeout, $interval, FirebaseRef, $firebaseArray, currentAuth) {
+.controller('chatCtrl', ['$scope', '$rootScope', '$state', '$stateParams', '$ionicActionSheet', '$ionicScrollDelegate', '$timeout', 'FirebaseRef', '$firebaseArray', 'currentAuth', 'Auth', '$ionicNavBarDelegate',
+  function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, $ionicScrollDelegate, $timeout, FirebaseRef, $firebaseArray, currentAuth, Auth, $ionicNavBarDelegate) {
+        $scope.Auth = Auth;
         var queue = FirebaseRef.child('queue/tasks');
         var chatroomRef;
-        if ($stateParams.user) {
-            chatroomRef = FirebaseRef.child('chatroom').child($stateParams.user);
+        if (currentAuth.provider !== 'custom') {
+            $ionicNavBarDelegate.showBackButton(false);
+            $scope.borger = currentAuth;
+        } else {
             FirebaseRef.child('users').child($stateParams.user).once('value', function (child) {
                 $scope.borger = child.val();
                 $scope.$apply();
             });
-        } else {
-            chatroomRef = FirebaseRef.child('chatroom').child(currentAuth.uid);
-            $scope.borger = currentAuth;
+
+            $ionicNavBarDelegate.showBackButton(true);
         }
+
+        chatroomRef = FirebaseRef.child('chatroom').child($stateParams.user);
+
+
 
         $scope.messages = [];
         chatroomRef.on('child_added', function (child) {
@@ -155,25 +219,18 @@ angular.module('starter.controllers', [])
             // for some reason the one time blur event is not firing in the browser but does on devices
             //keepKeyboardOpen();
 
-            if (currentAuth.auth.sagsbehandler) {
-                var priority = Date.now();
-                chatroomRef.push({
+
+            queue.push({
+                chat: {
                     msg: $scope.input.message,
-                    uid: currentAuth.uid,
-                    timestamp: priority
-                }).setPriority(priority);
-            } else {
-                queue.push({
-                    chat: {
-                        msg: $scope.input.message,
-                        uid: $rootScope.authData.uid
-                    }
-                }, function (err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                });
-            }
+                    uid: $rootScope.authData.uid
+                }
+            }, function (err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+
             $scope.input.message = '';
             $timeout(function () {
                 //keepKeyboardOpen();
@@ -252,25 +309,18 @@ angular.module('starter.controllers', [])
                                 canvas.height = height;
                                 var ctx = canvas.getContext("2d");
                                 ctx.drawImage(img, 0, 0, width, height);
-                                if (currentAuth.auth.sagsbehandler) {
-                                    var priority = Date.now();
-                                    chatroomRef.push({
+
+                                queue.push({
+                                    chat: {
                                         img: canvas.toDataURL('image/jpeg'),
-                                        uid: currentAuth.uid,
-                                        timestamp: priority
-                                    }).setPriority(priority);
-                                } else {
-                                    queue.push({
-                                        chat: {
-                                            img: canvas.toDataURL('image/jpeg'),
-                                            uid: $rootScope.authData.uid
-                                        }
-                                    }, function (err) {
-                                        if (err) {
-                                            console.log(err);
-                                        }
-                                    });
-                                }
+                                        uid: $rootScope.authData.uid
+                                    }
+                                }, function (err) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                });
+
                             };
                             img.src = "data:image/jpeg;base64," + imageData;
                         }
@@ -303,25 +353,18 @@ angular.module('starter.controllers', [])
                             canvas.height = height;
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, width, height);
-                            if (currentAuth.auth.sagsbehandler) {
-                                var priority = Date.now();
-                                chatroomRef.push({
+
+                            queue.push({
+                                chat: {
                                     img: canvas.toDataURL('image/jpeg'),
-                                    uid: currentAuth.uid,
-                                    timestamp: priority
-                                }).setPriority(priority);
-                            } else {
-                                queue.push({
-                                    chat: {
-                                        img: canvas.toDataURL('image/jpeg'),
-                                        uid: $rootScope.authData.uid
-                                    }
-                                }, function (err) {
-                                    if (err) {
-                                        console.log(err);
-                                    }
-                                });
-                            }
+                                    uid: $rootScope.authData.uid
+                                }
+                            }, function (err) {
+                                if (err) {
+                                    console.log(err);
+                                }
+                            });
+
                         };
                         img.src = e.target.result;
                     };

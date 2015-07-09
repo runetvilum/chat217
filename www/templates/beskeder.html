@@ -1,7 +1,11 @@
-<ion-view view-title="Seneste" hide-nav-bar="true">
+<ion-view view-title="Beskeder">
+    <ion-nav-buttons side="secondary">
+      <button class="button button-icon icon ion-log-out" ng-click="Auth.$unauth()">
+      </button>
+    </ion-nav-buttons>
     <ion-content>
         <ion-list>
-            <ion-item class="item-thumbnail-left item-icon-right" ng-repeat="item in items" ng-href="#/tab/chats?user={{item.uid}}">
+            <ion-item class="item-thumbnail-left item-icon-right" ng-repeat="item in items" ng-href="#/chatroom/{{item.uid}}">
                 <img ng-src="{{item.thumbnail}}">
                 <h2 am-time-ago="item.timestamp"></h2>
                 <p>{{item.msg}}</p>

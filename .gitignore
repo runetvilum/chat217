@@ -4,3 +4,5 @@ plugins
 www/lib
 chat217.log.*
 config.js
+resources/ios
+resources/android

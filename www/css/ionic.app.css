@@ -7709,6 +7709,13 @@ a.button {
   color: #b2b2b2;
   padding-top: 30px; }
 
+/*.tabs-top > .tabs, .tabs.tabs-top {
+    top: 0 !important;
+}
+
+.has-tabs-top {
+  top: 44px !important;
+}*/
 body {
   cursor: url('http://ionicframework.com/img/finger.png'), auto; }
 
@@ -7798,7 +7805,9 @@ img.profile-pic.right {
 .chat-bubble.left-img {
   background-color: #e6e5eb;
   float: left;
-  margin-left: 55px; }
+  margin-left: 55px;
+  z-index: 1;
+  color: #fff; }
 
 .chat-bubble.left:before {
   background-color: #e6e5eb;

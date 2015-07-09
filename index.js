@@ -77,8 +77,7 @@
                 ref.child('chatroom').child(data.chat.uid).push(doc, function (err) {
                     if (err) {
                         reject();
-                    } else {
-
+                    } else if (doc.uid.indexOf('custom') !== -1) {
                         ref.child('sagsbehandler').push(doc, function (err) {
                             if (err) {
                                 reject();
@@ -87,6 +86,7 @@
                             }
                         }).setPriority(-doc.timestamp);
                     }
+
                 }).setPriority(doc.timestamp);
             });
             ref.child('queue/tasks').orderByChild('_state').equalTo('error').on('child_added', function (child) {
