@@ -54,7 +54,7 @@
             res.send(token);
         });
     });
-    app.listen(4000);
+    app.listen(4001);
     console.log('Listening on port 4000');
     winston.remove(winston.transports.Console);
     winston.info('start');

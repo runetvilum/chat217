@@ -95,7 +95,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         });
     };*/
     scope.signIn = function (user) {
-        $http.post('http://localhost:4000/signin', user).then(function (res) {
+        $http.post('http://bykongen.addin.dk:4000/signin', user).then(function (res) {
             Auth.$authWithCustomToken(res.data).then(function (authData) {
                 console.log("Authentication succes:", authData.uid);
             }).catch(function (error) {
