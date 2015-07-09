@@ -1,0 +1,247 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+
+For example, you might change some of the default colors:
+
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
+$balanced:                        #33cd5f !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #444 !default;
+*/
+
+$red:#F44336;
+$pink:#E91E63;
+$purple:#9C27B0;
+$deeppurple:#673AB7;
+$indigo:#3F51B5;
+$blue:#2196F3;
+$lightblue:#03A9F4;
+$cyan:#00BCD4;
+$teal:#009688;
+$green:#4CAF50;
+$lightgreen:#8BC34A;
+$lime:#CDDC39;
+$yellow:#FFEB3B;
+$amber:#FFC107;
+$orange:#FF9800;
+$deeporange:#FF5722;
+$brown:#795548;
+$grey:#9E9E9E;
+$bluegrey:#607D8B;
+$black:#000;
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+.circle {
+    border-color: $blue;
+    border-style: solid;
+    border-radius: 30px;
+    height: 60px;
+    width: 60px;
+    background-color: transparent;
+    line-height: 60px;
+    font-size: 40px;
+    color: $blue;
+    margin: 30px 10px;
+}
+
+.login-title {
+    color: #b2b2b2;
+    padding-top: 30px;
+}
+
+body {
+    cursor: url('http://ionicframework.com/img/finger.png'), auto;
+}
+/* allows the bar-footer to be elastic /*
+/* optionally set a max-height */
+/* maxlength on the textarea will prevent /*
+/* it from getting too large also */
+
+.bar-footer {
+    overflow: visible !important;
+}
+
+.bar-footer textarea {
+    resize: none;
+    height: 25px;
+}
+/* fixes an ios bug bear */
+
+button.ion-android-send {
+    padding-top: 2px;
+}
+/* add this to keep your footer buttons down 
+at the bottom as the textarea resizes */
+
+.footer-btn-wrap {
+    position: relative;
+    height: 100%;
+    width: 50px;
+    top: 7px;
+}
+
+.footer-btn {
+    position: absolute !important;
+    bottom: 0;
+    font-weight: bold !important;
+}
+
+img.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 10px;
+}
+
+img.profile-pic.left {
+    left: 10px;
+}
+
+img.profile-pic.right {
+    right: 10px;
+}
+
+.ion-email {
+    float: right;
+    font-size: 32px;
+    vertical-align: middle;
+}
+
+.message {
+    font-size: 14px;
+}
+
+.message-detail {
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.bar.item-input-inset .item-input-wrapper input {
+    width: 100% !important;
+}
+
+.message-wrapper {
+    position: relative;
+}
+
+.message-wrapper:last-child {
+    margin-bottom: 10px;
+}
+
+.chat-bubble {
+    border-radius: 5px;
+    display: inline-block;
+    padding: 10px 18px;
+    position: relative;
+    margin: 10px;
+    max-width: 80%;
+}
+
+.chat-bubble:before {
+    content: "\00a0";
+    display: block;
+    height: 16px;
+    width: 9px;
+    position: absolute;
+    bottom: -7.5px;
+}
+
+.chat-bubble.left {
+    background-color: #e6e5eb;
+    float: left;
+    margin-left: 55px;
+}
+.chat-bubble.left-img {
+    background-color: #e6e5eb;
+    float: left;
+    margin-left: 55px;
+}
+
+.chat-bubble.left:before {
+    background-color: #e6e5eb;
+    left: 10px;
+    -webkit-transform: rotate(70deg) skew(5deg);
+}
+
+.chat-bubble.right {
+    background-color: $balanced;
+    color: #fff;
+    float: right;
+    margin-right: 55px;
+}
+
+.chat-bubble.right-img {
+    background-color: $balanced;
+    color: #fff;
+    float: right;
+    margin-right: 55px;
+}
+
+.chat-bubble.right:before {
+    background-color: $balanced;
+    right: 10px;
+    -webkit-transform: rotate(118deg) skew(-5deg);
+}
+
+.chat-bubble.right a.autolinker {
+    color: #fff;
+    font-weight: bold;
+}
+
+.user-messages-top-icon {
+    font-size: 28px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+    right: 5px;
+}
+
+.msg-header-username {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+}
+
+
+textarea,
+.item-input-wrapper {
+    /*background-color: #f4f4f4 !important;*/
+    background-color: #ffffff !important;
+    width: 100%;
+    
+}
+.item-input-wrapper {
+border-style: solid;
+    border-color: #ccc;
+    border-width: 1px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.cf {
+    clear: both !important;
+}
+
+a.autolinker {
+    color: #3b88c3;
+    text-decoration: none;
+}
+/* loading */
+
+
+.loader .ion-loading-c {
+    font-size: 64px;
+}

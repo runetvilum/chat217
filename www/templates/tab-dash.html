@@ -1,0 +1,13 @@
+<ion-view view-title="Seneste" >
+    <ion-content>
+        <ion-list>
+            <ion-item class="item-thumbnail-left item-icon-right" ng-repeat="item in items" ng-href="#/tab/chats?user={{item.uid}}">
+                <img ng-src="{{item.thumbnail}}">
+                <h2 am-time-ago="item.timestamp"></h2>
+                <p>{{item.msg}}</p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+            </ion-item>
+        </ion-list>
+        <ion-infinite-scroll ng-if="!noMoreItemsAvailable" on-infinite="loadMore()" distance="10%"></ion-infinite-scroll>
+    </ion-content>
+</ion-view>

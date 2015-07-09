@@ -1,0 +1,33 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-dark">
+        <button class="button button-clear" ng-click="modalLogin.hide()">Luk</button>
+        <h1 class="title">Login</h1>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list list-inset">
+            <label class="item item-input">
+                <input type="email" placeholder="Brugernavn" ng-model="user.email">
+            </label>
+            <label class="item item-input">
+                <input type="password" placeholder="Password" ng-model="user.password">
+            </label>
+        </div>
+        <div class="padding">
+            <button class="button button-block button-positive" ng-click="signIn(user)">
+                Login med brugernavn
+            </button>
+            <button class="button button-block button-positive" ng-click="signInAnonymously()">
+                Login som anonym
+            </button>
+            <h2 class="text-center login-title">Login med </h2>
+            <p class="text-center">
+                <button class="button ion-social-facebook circle" ng-click="signInFacebook()"></button>
+                <button class="button ion-social-twitter circle" ng-click="signInTwitter()"></button>
+                <button class="button ion-social-google circle" ng-click="signInGoogle()"></button>
+            </p>
+        </div>
+        <div class="padding assertive" ng-show="error">
+            {{error}}
+        </div>
+    </ion-content>
+</ion-modal-view>
