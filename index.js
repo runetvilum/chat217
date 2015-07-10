@@ -51,7 +51,9 @@
                 uid: "custom:" + req.body.email,
                 sagsbehandler: true
             });
-            res.send(token);
+            res.json({
+                token: token
+            });
         });
     });
     app.listen(4001);

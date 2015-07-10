@@ -43,8 +43,8 @@ angular.module('starter.controllers', [])
     };*/
     $scope.signIn = function (user) {
         //$http.post('http://bykongen.addin.dk/_chat217', user).then(function (res) {
-        $http.get('http://bykongen.addin.dk/_chat217/'+user.email+'/'+user.password).then(function
-            Auth.$authWithCustomToken(res.data).then(function (authData) {
+        $http.get('http://bykongen.addin.dk/_chat217/'+user.email+'/'+user.password).then(function(res){
+            Auth.$authWithCustomToken(res.data.token).then(function (authData) {
                 console.log("Authentication succes:", authData.uid);
             }).catch(function (error) {
                 console.error("Authentication failed:", error);
