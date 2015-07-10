@@ -32,7 +32,8 @@
     app.use(bodyParser.json({
         limit: '100mb'
     }));
-    app.get('/:email/:password', function (req, res) {
+    //app.get('/:email/:password', function (req, res) {
+    app.post('/', function (req, res) {
         /*if (!req.body || !req.body.email || !req.body.password) {
             return res.status(400).send(JSON.stringify({
                 ok: false,
@@ -42,7 +43,8 @@
         var couchdb = require('nano')({
             url: 'http://localhost:80'
         });
-        couchdb.auth(req.params.email, req.params.password, function (err, body, headers) {
+        //couchdb.auth(req.params.email, req.params.password, function (err, body, headers) {
+        couchdb.auth(req.body.email, req.body.password, function (err, body, headers) {
             if (err) {
                 return res.status(err.status_code || 500).send(err);
             }
