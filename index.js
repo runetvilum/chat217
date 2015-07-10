@@ -32,7 +32,7 @@
     app.use(bodyParser.json({
         limit: '100mb'
     }));
-    app.post('/signin', function (req, res) {
+    app.post('/', function (req, res) {
         if (!req.body || !req.body.email || !req.body.password) {
             return res.status(400).send(JSON.stringify({
                 ok: false,

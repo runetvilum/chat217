@@ -7,4 +7,18 @@ angular.module('starter.filters', [])
       return data.replace(/\n\r?/g, '<br />');
     };
   }
+])
+
+.filter('uid2img', ['$filter','FirebaseRef',
+  function($filter, FirebaseRef) {
+    return function(data) {
+        FirebaseRef.child('users').child(data).once('value',function(child){
+            var val= child.val();
+            if(val.hasOwnProperty(val.provider)){
+                return val[val.provider].profileImageURL;
+            }
+            return 'img/anonym.jpg';
+        });
+    };
+  }
 ]);

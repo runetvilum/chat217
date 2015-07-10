@@ -42,7 +42,7 @@ angular.module('starter.controllers', [])
         });
     };*/
     $scope.signIn = function (user) {
-        $http.post('http://bykongen.addin.dk:4001/signin', user).then(function (res) {
+        $http.post('http://bykongen.addin.dk/_chat217/signin', user).then(function (res) {
             Auth.$authWithCustomToken(res.data).then(function (authData) {
                 console.log("Authentication succes:", authData.uid);
             }).catch(function (error) {
@@ -65,6 +65,19 @@ angular.module('starter.controllers', [])
     var scrollRef = baseRef.limitToFirst(10);
     var last, current;
     $scope.items = [];
+    var getUser = function (val) {
+        FirebaseRef.child('users').child(val.uid).once('value', function (child) {
+            var val2 = child.val();
+            if (val2.hasOwnProperty(val2.provider)) {
+                val.avatar = val2[val2.provider].profileImageURL;
+                val.name = val2[val2.provider].displayName;
+            } else {
+                val.avatar = 'img/anonym.jpg';
+                val.name = 'Anonym'
+            }
+            $scope.$apply();
+        });
+    };
     scrollRef.once('value', function (child) {
         if (child.hasChildren()) {
             child.forEach(function (item) {
@@ -77,6 +90,7 @@ angular.module('starter.controllers', [])
                         var val = child.val();
                         $scope.items.unshift(val);
                         $scope.$apply();
+                        getUser(val);
                     }
                 });
                 return true;
@@ -86,10 +100,12 @@ angular.module('starter.controllers', [])
                 last = item.key();
                 $scope.items.push(val);
                 $scope.$apply();
+                getUser(val);
             });
         } else {
             baseRef.on('child_added', function (child) {
                 var val = child.val();
+                getUser(val);
                 $scope.items.unshift(val);
                 $scope.$apply();
             });
@@ -99,6 +115,7 @@ angular.module('starter.controllers', [])
     }, function (err) {
         baseRef.on('child_added', function (child) {
             var val = child.val();
+            getUser(val);
             $scope.items.unshift(val);
             $scope.$apply();
         });
@@ -117,6 +134,7 @@ angular.module('starter.controllers', [])
                 for (var key in items) {
                     last = key;
                     var val = items[key];
+                    getUser(val);
                     $scope.items.push(val);
                 }
                 $scope.$broadcast('scroll.infiniteScrollComplete');

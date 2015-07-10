@@ -6,8 +6,43 @@
   },
   "dependencies": {
     "angular-moment": "~0.10.1",
-    "angular-elastic": "~2.4.2",
     "angularfire": "~1.1.2",
     "idle.js": "~1.0.0"
+  },
+  "preen": {
+    "angular": [
+      ""
+    ],
+    "angular-animate": [
+      ""
+    ],
+    "angular-sanitize": [
+      ""
+    ],
+    "angular-ui-router": [
+      ""
+    ],
+    "idle.js": [
+      ""
+    ],
+    "firebase": [
+      "firebase.js"
+    ],
+    "angular-moment": [
+      "angular-moment.min.js"
+    ],
+    "angularfire": [
+      "dist/angularfire.min.js"
+    ],
+    "moment": [
+      "min/moment.min.js",
+      "locale/da.js"
+    ],
+    "ionic": [
+      "css/ionic.min.css",
+      "fonts/*",
+      "js/ionic.bundle.min.js",
+      "scss/**/*"
+    ]
   }
 }

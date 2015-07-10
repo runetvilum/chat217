@@ -1,14 +1,15 @@
 <ion-view view-title="Beskeder">
     <ion-nav-buttons side="secondary">
-      <button class="button button-icon icon ion-log-out" ng-click="Auth.$unauth()">
-      </button>
+        <button class="button button-icon icon ion-log-out" ng-click="Auth.$unauth()">
+        </button>
     </ion-nav-buttons>
     <ion-content>
         <ion-list>
-            <ion-item class="item-thumbnail-left item-icon-right" ng-repeat="item in items" ng-href="#/chatroom/{{item.uid}}">
-                <img ng-src="{{item.thumbnail}}">
-                <h2 am-time-ago="item.timestamp"></h2>
+            <ion-item class="item-avatar item-icon-right" ng-repeat="item in items" ng-href="#/chatroom/{{item.uid}}">
+                <img ng-src="{{item.avatar}}">
+                <span>{{item.name}}</span><span class="item-note" am-time-ago="item.timestamp"></span>
                 <p>{{item.msg}}</p>
+                <img ng-if="item.img" ng-src="{{item.img}}" height="50px"/>
                 <i class="icon ion-chevron-right icon-accessory"></i>
             </ion-item>
         </ion-list>

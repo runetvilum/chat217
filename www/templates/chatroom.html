@@ -9,7 +9,7 @@
 
             <div ng-if="message.uid.indexOf('custom')!==-1">
 
-                <img ng-click="viewProfile(message)" class="profile-pic left" src="/img/logo.png" onerror="onProfilePicError(this)" />
+                <img ng-click="viewProfile(message)" class="profile-pic left" src="img/logo.png" onerror="onProfilePicError(this)" />
 
                 <div class="chat-bubble left" ng-if="message.msg">
 
@@ -37,7 +37,7 @@
 
             <div ng-if="message.uid.indexOf('custom')===-1">
 
-                <img class="profile-pic right" ng-src="{{borger[borger.provider].profileImageURL  || '/img/ionic.png'}}" onerror="onProfilePicError(this)" />
+                <img class="profile-pic right" ng-src="{{borger[borger.provider].profileImageURL  || 'img/ionic.png'}}" onerror="onProfilePicError(this)" />
 
                 <div class="chat-bubble right" ng-if="message.msg">
 
@@ -67,6 +67,7 @@
             <div class="cf"></div>
 
         </div>
+        <input id="image" type="file" style="display:none">
     </ion-content>
 
 
@@ -85,5 +86,5 @@
 
     </ion-footer-bar>
 
-    <input id="image" type="file" style="display:none">
+    
 </ion-view>
