@@ -34,12 +34,12 @@
     }));
     //app.get('/:email/:password', function (req, res) {
     app.post('/', function (req, res) {
-        /*if (!req.body || !req.body.email || !req.body.password) {
+        if (!req.body || !req.body.email || !req.body.password) {
             return res.status(400).send(JSON.stringify({
                 ok: false,
                 message: 'email og password er påkrævet.'
             }));
-        }*/
+        }
         var couchdb = require('nano')({
             url: 'http://localhost:80'
         });
