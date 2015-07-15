@@ -1,0 +1,20 @@
+<ion-view view-title="Login" hide-back-button="true">
+    <ion-content>
+        <div class="list list-inset">
+            <label class="item item-input">
+                <input type="email" placeholder="Brugernavn" ng-model="user.email">
+            </label>
+            <label class="item item-input">
+                <input type="password" placeholder="Password" ng-model="user.password">
+            </label>
+            <label class="item assertive" ng-if="error">
+                {{error}}
+            </label>
+        </div>
+        <div class="padding">
+            <button class="button button-block button-balanced" ng-click="signIn(user)">
+                Login med brugernavn
+            </button>
+        </div>
+    </ion-content>
+</ion-view>

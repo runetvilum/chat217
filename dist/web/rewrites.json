@@ -4,8 +4,13 @@
     "method": "GET",
     "query": {}
 }, {
+    "from": "_chat217",
+    "to": "../../../_chat217",
+    "method": "POST",
+    "query": {}
+}, {
     "from": "*",
-    "to": "../chat217/*",
+    "to": "../web/*",
     "method": "GET",
     "query": {}
 }]

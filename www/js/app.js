@@ -41,7 +41,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
         console.log(error);
-        $state.go('login');
+        if (toState.name === 'beskeder') {
+            $state.go('login-sagsbehandler');
+        } else {
+            $state.go('login');
+        }
     });
     Auth.$onAuth(function (authData) {
         if (authData) {
@@ -147,6 +151,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: "templates/login.html",
         controller: 'loginCtrl'
     })
+    
+    .state('login-sagsbehandler', {
+        url: "/login-sagsbehandler",
+        templateUrl: "templates/login-sagsbehandler.html",
+        controller: 'loginCtrl'
+    })
 
     // setup an abstract state for the tabs directive
     .state('borger', {
@@ -182,7 +192,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             }]
         }
     })
-    
+
 
     .state('sagsbehandler', {
         url: "/sagsbehandler",

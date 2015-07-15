@@ -4,22 +4,22 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         'couch-compile': {
-            www: {
+            web: {
                 files: {
-                    'tmp/www.json': 'dist/web'
+                    'tmp/web.json': 'dist/web'
                 }
             }
             
         },
         
         'couch-push': {
-            www: {
+            web: {
                 options: {
                     user: 'admin',
                     pass: 'rutv2327'
                 },
                 files: {
-                    'http://bykongen.addin.dk/chat217': 'tmp/www.json'
+                    'http://bykongen.addin.dk/chat217': 'tmp/web.json'
                 }
             }
             

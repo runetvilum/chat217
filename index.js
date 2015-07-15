@@ -82,7 +82,7 @@
                     if (err) {
                         reject();
                     } else if (doc.uid.indexOf('custom') === -1) {
-                        ref.child('sagsbehandler').push(doc, function (err) {
+                        ref.child('sagsbehandler').child(data.chat.room).set(doc, function (err) {
                             if (err) {
                                 reject();
                             } else {
