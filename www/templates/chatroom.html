@@ -1,8 +1,8 @@
 <ion-view id="userMessagesView" view-title="Chat">
-    <ion-nav-buttons side="secondary">
+    <!--ion-nav-buttons side="secondary">
         <button class="button button-icon icon ion-log-out" ng-click="Auth.$unauth()">
         </button>
-    </ion-nav-buttons>
+    </ion-nav-buttons-->
 
     <ion-content has-bouncing="true" class="has-header has-footer" delegate-handle="userMessageScroll">
         <div ng-repeat="message in messages" class="message-wrapper" on-hold="onMessageHold($event, $index, message)">
@@ -86,5 +86,5 @@
 
     </ion-footer-bar>
 
-    
+
 </ion-view>

@@ -41,7 +41,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
         console.log(error);
-        if (toState.name === 'beskeder') {
+        if (toState.name === 'app.beskeder') {
             $state.go('login-sagsbehandler');
         } else {
             $state.go('login');
@@ -53,16 +53,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             //userRef = FirebaseRef.child('presence').child(authData.uid);
 
             if (authData.provider === 'custom') {
-                $state.go('beskeder');
+                $state.go('app.beskeder', {
+                    arkiv: 0
+                });
             } else {
                 FirebaseRef.child('users').child(authData.uid).set(authData);
-                $state.go('chatroom', {
+                $state.go('app.chatroom', {
                     user: authData.uid
                 });
             }
         } else {
             delete $rootScope.authData;
-            $state.go('login');
+            //$state.go('app.login');
         }
     });
     /*$ionicModal.fromTemplateUrl('templates/modal-login.html', {
@@ -145,17 +147,27 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     // Each state's controller can be found in controllers.js
     $stateProvider
 
+        .state('app', {
+        url: '/app',
+        abstract: true,
+        templateUrl: 'templates/menu.html',
+        controller: 'AppCtrl'
+    })
 
-        .state('login', {
+    .state('login', {
         url: "/login",
+        cache: false,
         templateUrl: "templates/login.html",
         controller: 'loginCtrl'
+
     })
-    
+
     .state('login-sagsbehandler', {
         url: "/login-sagsbehandler",
+        cache: false,
         templateUrl: "templates/login-sagsbehandler.html",
         controller: 'loginCtrl'
+
     })
 
     // setup an abstract state for the tabs directive
@@ -171,25 +183,33 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         }
     })
 
-    .state('beskeder', {
-        url: "/beskeder",
-        controller: 'beskederCtrl',
-        templateUrl: "templates/beskeder.html",
-        resolve: {
-            "currentAuth": ["Auth", function (Auth) {
-                return Auth.$requireAuth();
-            }]
+    .state('app.beskeder', {
+        url: "/beskeder/:arkiv",
+        views: {
+            'menuContent': {
+                controller: 'beskederCtrl',
+                templateUrl: "templates/beskeder.html",
+                resolve: {
+                    "currentAuth": ["Auth", function (Auth) {
+                        return Auth.$requireAuth();
+                    }]
+                }
+            }
         }
     })
 
-    .state('chatroom', {
+    .state('app.chatroom', {
         url: "/chatroom/:user",
-        controller: 'chatCtrl',
-        templateUrl: "templates/chatroom.html",
-        resolve: {
-            "currentAuth": ["Auth", function (Auth) {
-                return Auth.$requireAuth();
-            }]
+        views: {
+            'menuContent': {
+                controller: 'chatCtrl',
+                templateUrl: "templates/chatroom.html",
+                resolve: {
+                    "currentAuth": ["Auth", function (Auth) {
+                        return Auth.$requireAuth();
+                    }]
+                }
+            }
         }
     })
 
@@ -270,6 +290,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/login');
+    //$urlRouterProvider.otherwise('/app/login');
 
 });

@@ -41,7 +41,7 @@
             }));
         }
         var couchdb = require('nano')({
-            url: 'http://localhost:80'
+            url: 'http://localhost:5984'
         });
         //couchdb.auth(req.params.email, req.params.password, function (err, body, headers) {
         couchdb.auth(req.body.email, req.body.password, function (err, body, headers) {
@@ -70,7 +70,8 @@
                 winston.info(data.chat);
                 var doc = {
                     uid: data.chat.uid,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    arkiv: false
                 };
                 if (data.chat.msg) {
                     doc.msg = data.chat.msg;
@@ -82,13 +83,14 @@
                     if (err) {
                         reject();
                     } else if (doc.uid.indexOf('custom') === -1) {
-                        ref.child('sagsbehandler').child(data.chat.room).set(doc, function (err) {
+                        var sag = ref.child('sagsbehandler').child(data.chat.room);
+                        sag.setWithPriority(doc, -doc.timestamp, function (err) {
                             if (err) {
                                 reject();
                             } else {
                                 resolve();
                             }
-                        }).setPriority(-doc.timestamp);
+                        });
                     } else {
                         resolve();
                     }

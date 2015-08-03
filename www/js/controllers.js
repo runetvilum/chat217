@@ -1,5 +1,19 @@
 angular.module('starter.controllers', [])
 
+.controller('AppCtrl', function ($scope, $rootScope, $state, $ionicModal, $timeout, Auth) {
+    $scope.logout = function () {
+        if ($rootScope.authData && $rootScope.authData.provider === 'custom') {
+            Auth.$unauth();
+            $state.go('login-sagsbehandler');
+        } else {
+            Auth.$unauth();
+            $state.go('login');
+        }
+
+    };
+
+})
+
 .controller('loginCtrl', function ($scope, FirebaseRef, Auth, $http) {
     $scope.signInFacebook = function () {
         Auth.$authWithOAuthPopup("facebook").then(function (authData) {
@@ -42,6 +56,7 @@ angular.module('starter.controllers', [])
         });
     };*/
     $scope.signIn = function (user) {
+        //$http.post('http://localhost:4001', user).then(function (res) {
         $http.post('http://chat217.addin.dk/_chat217', user).then(function (res) {
             //$http.get('http://bykongen.addin.dk/_chat217/'+user.email+'/'+user.password).then(function(res){
             Auth.$authWithCustomToken(res.data.token).then(function (authData) {
@@ -57,95 +72,132 @@ angular.module('starter.controllers', [])
     };
 })
 
-.controller('beskederCtrl', function ($scope, FirebaseRef, Auth, currentAuth) {
+.controller('beskederCtrl', function ($scope, FirebaseRef, Auth, currentAuth, $firebaseArray, $stateParams) {
     // create a connection to Firebase
     $scope.Auth = Auth;
-    var baseRef = FirebaseRef.child('sagsbehandler');
-
-    // create a scrollable reference
-    var scrollRef = baseRef.limitToFirst(10);
-    var last, current;
-    $scope.items = [];
+    $scope.canSwipe = $stateParams.arkiv === '0';
+    var baseRef = FirebaseRef.child('sagsbehandler').orderByChild("arkiv").equalTo(!$scope.canSwipe);
+    $scope.items = $firebaseArray(baseRef);
+    $scope.items.$watch(function (event) {
+        console.log(event);
+        if (event.event === 'child_added' || event.event === 'child_changed') {
+            var item = $scope.items.$getRecord(event.key);
+            getUser(item);
+        }
+    });
+    $scope.users = {};
     var getUser = function (val) {
         FirebaseRef.child('users').child(val.uid).once('value', function (child) {
             var val2 = child.val();
-            if (val2.hasOwnProperty(val2.provider)) {
+            if (val2 && val2.hasOwnProperty(val2.provider)) {
                 val.avatar = val2[val2.provider].profileImageURL;
                 val.name = val2[val2.provider].displayName;
             } else {
                 val.avatar = 'img/anonym.jpg';
-                val.name = 'Anonym'
+                val.name = 'Anonym';
             }
             $scope.$apply();
         });
     };
-    scrollRef.once('value', function (child) {
-        if (child.hasChildren()) {
-            child.forEach(function (item) {
-                var key = item.key();
+    $scope.arkiv = function (item) {
+        item.arkiv = true;
+        delete item.avatar;
+        delete item.name;
+        $scope.items.$save(item);
+    };
+    /*
+        // create a scrollable reference
+        var scrollRef = baseRef.limitToFirst(10);
+        var last, current;
+        $scope.items = [];
 
-                baseRef.orderByKey().startAt(key).on('child_added', function (child) {
-                    console.log('ny');
-                    var newkey = child.key();
-                    if (key != newkey) {
-                        var val = child.val();
-                        $scope.items.unshift(val);
-                        $scope.$apply();
-                        getUser(val);
-                    }
+        var binarySearch = function (arr, docId) {
+            var low = 0,
+                high = arr.length,
+                mid;
+            while (low < high) {
+                mid = (low + high) >>> 1; // faster version of Math.floor((low + high) / 2)
+                arr[mid]._id < docId ? low = mid + 1 : high = mid;
+            }
+            return low;
+        };
+        scrollRef.once('value', function (child) {
+            if (child.hasChildren()) {
+                child.forEach(function (item) {
+                    var key = item.key();
+
+                    baseRef.orderByKey().startAt(key).on('child_added', function (child) {
+                        console.log('ny');
+                        var newkey = child.key();
+                        if (key != newkey) {
+                            var val = child.val();
+                            val._id = newkey;
+                            $scope.items.unshift(val);
+                            $scope.$apply();
+                            getUser(val);
+                        }
+                    });
+                    return true;
                 });
-                return true;
-            });
-            child.forEach(function (item) {
-                var val = item.val();
-                last = item.key();
-                $scope.items.push(val);
-                $scope.$apply();
-                getUser(val);
-            });
-        } else {
+                child.forEach(function (item) {
+                    var val = item.val();
+                    val._id = item.key();
+                    last = val._id;
+                    $scope.items.push(val);
+                    $scope.$apply();
+                    getUser(val);
+                });
+            } else {
+                baseRef.on('child_added', function (child) {
+                    var val = child.val();
+                    val._id = child.key();
+                    getUser(val);
+                    $scope.items.unshift(val);
+                    $scope.$apply();
+                });
+                firebaseRef.on('child_removed', function (oldChildSnapshot) {
+                    var key=oldChildSnapshot.key();
+                    binarySearch($scope.items,key);
+                });
+                firebaseRef.on('child_changed', function (childSnapshot, prevChildKey) {
+                    // code to handle child data changes.
+                });
+            }
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+
+        }, function (err) {
             baseRef.on('child_added', function (child) {
                 var val = child.val();
                 getUser(val);
                 $scope.items.unshift(val);
                 $scope.$apply();
             });
-        }
-        $scope.$broadcast('scroll.infiniteScrollComplete');
-
-    }, function (err) {
-        baseRef.on('child_added', function (child) {
-            var val = child.val();
-            getUser(val);
-            $scope.items.unshift(val);
-            $scope.$apply();
         });
-    });
 
 
-    // This function is called whenever the user reaches the bottom
-    $scope.loadMore = function () {
-        if (last && last !== current) {
-            current = last;
-            var next = baseRef.orderByKey().endAt(last).limitToLast(11);
-            next.on('value', function (child) {
-                console.log("loadmore data");
-                var items = child.val();
-                delete items[last];
-                for (var key in items) {
-                    last = key;
-                    var val = items[key];
-                    getUser(val);
-                    $scope.items.push(val);
-                }
-                $scope.$broadcast('scroll.infiniteScrollComplete');
-            });
+        // This function is called whenever the user reaches the bottom
+        $scope.loadMore = function () {
+            if (last && last !== current) {
+                current = last;
+                var next = baseRef.orderByKey().endAt(last).limitToLast(11);
+                next.on('value', function (child) {
+                    console.log("loadmore data");
+                    var items = child.val();
+                    delete items[last];
+                    for (var key in items) {
+                        last = key;
+                        var val = items[key];
+                        getUser(val);
+                        $scope.items.push(val);
+                    }
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                });
 
-        }
-        console.log("loadmore");
+            }
+            console.log("loadmore");
 
-    };
-
+        };
+    */
 })
 
 /*.controller('ChatsCtrl', function ($scope, Chats) {
@@ -168,7 +220,7 @@ angular.module('starter.controllers', [])
   function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, $ionicScrollDelegate, $timeout, FirebaseRef, $firebaseArray, currentAuth, Auth, $ionicNavBarDelegate) {
         $scope.Auth = Auth;
         var queue = FirebaseRef.child('queue/tasks');
-        var chatroomRef;
+        var chatroomRef = FirebaseRef.child('chatroom').child($stateParams.user);
         if (currentAuth.provider !== 'custom') {
             $ionicNavBarDelegate.showBackButton(false);
             $scope.borger = currentAuth;
@@ -180,36 +232,57 @@ angular.module('starter.controllers', [])
 
             $ionicNavBarDelegate.showBackButton(true);
         }
-
-        chatroomRef = FirebaseRef.child('chatroom').child($stateParams.user);
-
-
-
-        $scope.messages = [];
-        chatroomRef.on('child_added', function (child) {
-            var val = child.val();
-            if (val.img) {
-                var img = new Image();
-                img.onload = function () {
-                    $scope.messages.push({
-                        img: val.img,
-                        uid: val.uid,
-                        timestamp: val.timestamp,
-                        style: {
+        var compare = function (a, b) {
+            return a.timestamp - b.timestamp;
+        };
+        $scope.messages = $firebaseArray(chatroomRef);
+        $scope.messages.sort(compare);
+        $scope.messages.$watch(function (event) {
+            console.log(event);
+            if (event.event === 'child_added') {
+                var val = $scope.messages.$getRecord(event.key);
+                if (val.img) {
+                    var img = new Image();
+                    img.onload = function () {
+                        val.style = {
                             height: img.height + 'px',
                             width: img.width + 'px'
-                        }
-                    });
-                    $scope.$apply();
-                    viewScroll.scrollBottom(true);
-                };
-                img.src = val.img;
-            } else {
-                $scope.messages.push(val);
-                $scope.$apply();
+                        };
+                        $scope.$apply();
+
+                    };
+                    img.src = val.img;
+                }
                 viewScroll.scrollBottom(true);
             }
+            $scope.messages.sort(compare);
         });
+        /*
+                $scope.messages = [];
+                chatroomRef.on('child_added', function (child) {
+                    var val = child.val();
+                    if (val.img) {
+                        var img = new Image();
+                        img.onload = function () {
+                            $scope.messages.push({
+                                img: val.img,
+                                uid: val.uid,
+                                timestamp: val.timestamp,
+                                style: {
+                                    height: img.height + 'px',
+                                    width: img.width + 'px'
+                                }
+                            });
+                            $scope.$apply();
+                            viewScroll.scrollBottom(true);
+                        };
+                        img.src = val.img;
+                    } else {
+                        $scope.messages.push(val);
+                        $scope.$apply();
+                        viewScroll.scrollBottom(true);
+                    }
+                });*/
 
         var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
         var footerBar; // gets set in $ionicView.enter
