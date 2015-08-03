@@ -1,4 +1,3 @@
-node_modules
 platforms
 plugins
 www/lib
@@ -7,3 +6,5 @@ config.js
 resources/ios
 resources/android
 dist/web/_attachments
+tmp
+node_modules
